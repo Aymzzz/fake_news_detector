@@ -1,24 +1,45 @@
 import os
 import numpy as np
+import pandas as pd
+
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from transformers import DistilBertForSequenceClassification, get_scheduler
-from torch.optim import AdamW
+from transformers.optimization import AdamW  # Use from transformers directly
 from sklearn.metrics import classification_report
 from tqdm import tqdm
 
-# Setup
+# ============================
+# Set paths relative to script
+# ============================
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))  # This script's folder (models)
+PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, ".."))  # Move up to root
+DATA_PROCESSED_DIR = os.path.join(PROJECT_ROOT, 'data', 'processed')
+DATA_RAW_DIR = os.path.join(PROJECT_ROOT, 'data', 'raw')
+MODEL_SAVE_DIR = os.path.join(PROJECT_ROOT, 'models', 'trained')
+
+# ===============
+# Device Setup
+# ===============
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {DEVICE}")
+
+# ===========
+# Parameters
+# ===========
 MODEL_NAME = 'distilbert-base-uncased'
 BATCH_SIZE = 128
 EPOCHS = 10
-SAVE_PATH = 'model/trained/fake_news_distilbert.pt'
 
+# ===============
+# Load functions
+# ===============
 def load_data(split):
     """Load processed features and labels."""
-    input_ids = np.load(f"data/processed/{split}_input_ids.npy")
-    attention_mask = np.load(f"data/processed/{split}_attention_mask.npy")
-    labels = np.load(f"data/processed/{split}_labels.npy")
+    input_ids = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_input_ids.npy"))
+    attention_mask = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_attention_mask.npy"))
+    labels = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_labels.npy"))
+
     return (
         torch.tensor(input_ids, dtype=torch.long),
         torch.tensor(attention_mask, dtype=torch.long),
@@ -26,13 +47,14 @@ def load_data(split):
     )
 
 def create_dataloader(inputs, masks, labels, sampler_type='random'):
-    """Wrap tensors into a DataLoader."""
     dataset = TensorDataset(inputs, masks, labels)
     sampler = RandomSampler(dataset) if sampler_type == 'random' else SequentialSampler(dataset)
     return DataLoader(dataset, sampler=sampler, batch_size=BATCH_SIZE)
 
+# ==========
+# Training
+# ==========
 def train():
-    # Load data
     print("Loading data...")
     train_inputs, train_masks, train_labels = load_data("train")
     valid_inputs, valid_masks, valid_labels = load_data("valid")
@@ -40,7 +62,6 @@ def train():
     train_loader = create_dataloader(train_inputs, train_masks, train_labels, 'random')
     valid_loader = create_dataloader(valid_inputs, valid_masks, valid_labels, 'sequential')
 
-    # Load model
     print("Loading DistilBERT model...")
     model = DistilBertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=6)
     model.to(DEVICE)
@@ -89,10 +110,13 @@ def train():
         "pants-fire", "false", "barely-true", "half-true", "mostly-true", "true"
     ]))
 
-    # Save model
-    os.makedirs(os.path.dirname(SAVE_PATH), exist_ok=True)
-    torch.save(model.state_dict(), SAVE_PATH)
-    print(f"\nModel saved to: {SAVE_PATH}")
+    os.makedirs(MODEL_SAVE_DIR, exist_ok=True)
+    model_save_path = os.path.join(MODEL_SAVE_DIR, 'distilbert_model.pth')
+    torch.save(model.state_dict(), model_save_path)
+    print(f"\n✅ Model saved at: {model_save_path}")
 
+# ==========
+# Run
+# ==========
 if __name__ == "__main__":
     train()
