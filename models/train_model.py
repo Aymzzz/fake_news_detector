@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from transformers import DistilBertForSequenceClassification, get_scheduler
-from transformers.optimization import AdamW  # Use from transformers directly
+from torch.optim import AdamW  # Use from transformers directly
 from sklearn.metrics import classification_report
 from tqdm import tqdm
 
@@ -28,8 +28,8 @@ print(f"Using device: {DEVICE}")
 # Parameters
 # ===========
 MODEL_NAME = 'distilbert-base-uncased'
-BATCH_SIZE = 128
-EPOCHS = 10
+BATCH_SIZE = 32
+EPOCHS = 7
 
 # ===============
 # Load functions
