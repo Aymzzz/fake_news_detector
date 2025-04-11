@@ -7,10 +7,10 @@ from torch.optim import AdamW
 from tqdm import tqdm
 from sklearn.metrics import classification_report
 
-# Directories
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-PROCESSED_DIR = os.path.join(BASE_DIR, "data/processed")
-MODEL_SAVE_PATH = os.path.join(BASE_DIR, "models/trained/distilbert_binary.pth")
+# Directories (you're inside models/, so go up two levels)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
+MODEL_SAVE_PATH = os.path.join(BASE_DIR, "models", "trained", "distilbert_model.pth")
 os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
 
 # Device setup
