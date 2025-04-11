@@ -1,0 +1,29 @@
+{
+  "created_at": "2025-04-12 00:40:34.192047",
+  "dataset_info": {
+    "total_samples": 11314,
+    "train_samples": 8173,
+    "valid_samples": 1443,
+    "test_samples": 1698,
+    "class_balance": {
+      "train": {
+        "true": 4087,
+        "false": 4086
+      },
+      "valid": {
+        "true": 721,
+        "false": 722
+      },
+      "test": {
+        "true": 849,
+        "false": 849
+      }
+    }
+  },
+  "processing": {
+    "text_cleaning": "enhanced",
+    "tokenizer": "distilbert-base-uncased",
+    "max_length": 256,
+    "random_state": 42
+  }
+}
