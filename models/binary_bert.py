@@ -23,7 +23,7 @@ valid_dataset = torch.load(os.path.join(PROCESSED_DIR, "valid_tokenized.pt"))
 test_dataset = torch.load(os.path.join(PROCESSED_DIR, "test_tokenized.pt"))
 
 # Dataloaders
-BATCH_SIZE = 32  # You can try increasing this if VRAM allows
+BATCH_SIZE = 64
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
 valid_loader = DataLoader(valid_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
