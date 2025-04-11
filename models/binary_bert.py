@@ -7,20 +7,22 @@ from torch.optim import AdamW
 from tqdm import tqdm
 from sklearn.metrics import classification_report
 
-# Directories (you're inside models/, so go up two levels)
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
-MODEL_SAVE_PATH = os.path.join(BASE_DIR, "models", "trained", "distilbert_model.pth")
-os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
+# Directories
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))  # This script's folder (models)
+PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, ".."))  # Move up to root
+PROCESSED_DIR = os.path.join(PROJECT_ROOT, 'data', 'processed')
+#DATA_RAW_DIR = os.path.join(PROJECT_ROOT, 'data', 'raw')
+MODEL_SAVE_PATH = os.path.join(PROJECT_ROOT, 'models', 'trained')
 
 # Device setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"🖥️ Using device: {device}")
 
 # Load tokenized datasets
-train_dataset = torch.load(os.path.join(PROCESSED_DIR, "train_tokenized.pt"))
-valid_dataset = torch.load(os.path.join(PROCESSED_DIR, "valid_tokenized.pt"))
-test_dataset = torch.load(os.path.join(PROCESSED_DIR, "test_tokenized.pt"))
+train_dataset = torch.load(os.path.join(PROCESSED_DIR, "train_tokenized.pt"), weights_only=False)
+valid_dataset = torch.load(os.path.join(PROCESSED_DIR, "valid_tokenized.pt"), weights_only=False)
+test_dataset = torch.load(os.path.join(PROCESSED_DIR, "test_tokenized.pt"), weights_only=False)
+
 
 # Dataloaders
 BATCH_SIZE = 64

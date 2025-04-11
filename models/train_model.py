@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from transformers import DistilBertForSequenceClassification, get_scheduler
-from torch.optim import AdamW  # Use from transformers directly
+from torch.optim import AdamW 
 from sklearn.metrics import classification_report
 from tqdm import tqdm
 
@@ -14,7 +14,7 @@ from tqdm import tqdm
 # ============================
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))  # This script's folder (models)
 PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, ".."))  # Move up to root
-DATA_PROCESSED_DIR = os.path.join(PROJECT_ROOT, 'data', 'processed')
+DATA_PROCESSED_DIR = os.path.join(PROJECT_ROOT, 'data', 'processed', 'multy-output')
 DATA_RAW_DIR = os.path.join(PROJECT_ROOT, 'data', 'raw')
 MODEL_SAVE_DIR = os.path.join(PROJECT_ROOT, 'models', 'trained')
 
@@ -35,7 +35,7 @@ EPOCHS = 7
 # Load functions
 # ===============
 def load_data(split):
-    """Load processed features and labels."""
+    """Load processed features and labels from multy-output directory."""
     input_ids = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_input_ids.npy"))
     attention_mask = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_attention_mask.npy"))
     labels = np.load(os.path.join(DATA_PROCESSED_DIR, f"{split}_labels.npy"))
